@@ -32,6 +32,7 @@ options=("Обновить систему"
          "Убрать 30-секундное ожидание у учетной записи Ученика"
          "Chrome по умолчанию у Ученика"
          "Удалить учетку User"
+         "Переустановить KDE Plasma"
          "Перезагрузить"
 )
 
@@ -168,11 +169,16 @@ function function_default_users () {
             echo -e "\e[31mПароль Ученика не изменен\e[0m"
         fi
     fi
+
+    mkdir -p '/home/student/Рабочий стол/Сдать работы'
+    chown student:student '/home/student/Рабочий стол/Сдать работы'
+    chmod 750 '/home/student/Рабочий стол/Сдать работы'
 }
 
 #     Пересоздание Ученика
 function function_recreate_student () {
     userdel -rf student
+    rm -rf /home/student
     echo -e "\e[92mСоздаю\e[0m пользователя \e[35mstudent\e[0m и устанавливаю пароль"
     if [ -z ${student_pass+x} ]; then
         if [ "$use_gui" = true ]; then
@@ -189,6 +195,10 @@ function function_recreate_student () {
     else
         echo -e "\e[31mПароль Ученика не изменен\e[0m"
     fi
+
+    mkdir -p '/home/student/Рабочий стол/Сдать работы'
+    chown student:student '/home/student/Рабочий стол/Сдать работы'
+    chmod 750 '/home/student/Рабочий стол/Сдать работы'
 }
 
 #     Блокировка рабочего стола ученика
@@ -199,7 +209,11 @@ function function_block_desktop () {
         chmod 640 /home/student/.config/plasma-org.kde.plasma.desktop-appletsrc
         chattr +i /home/student/.config/plasma-org.kde.plasma.desktop-appletsrc
     else
-        echo -e "\e[31mОтсутствует файл plasma-org.kde.plasma.desktop-appletsrc\e[0m"
+        echo -e "\e[31mОтсутствует файл plasma-org.kde.plasma.desktop-appletsrc. Создаю пустой\e[0m"
+        touch /home/student/.config/plasma-org.kde.plasma.desktop-appletsrc
+        chown root:student /home/student/.config/plasma-org.kde.plasma.desktop-appletsrc
+        chmod 640 /home/student/.config/plasma-org.kde.plasma.desktop-appletsrc
+        chattr +i /home/student/.config/plasma-org.kde.plasma.desktop-appletsrc
     fi
     if [ -f /home/student/.config/systemsettingsrc ]; then
         chown root:student /home/student/.config/systemsettingsrc
@@ -236,6 +250,12 @@ function function_block_desktop () {
         chown root:student /home/student/default.png
         chmod 640 /home/student/default.png
         chattr +i /home/student/default.png
+    fi
+
+    if [ -d /home/student/Рабочий\ стол ]; then
+        chown root:student '/home/student/Рабочий стол'
+        chmod 750 '/home/student/Рабочий стол'
+        chattr +i '/home/student/Рабочий стол'
     fi
 }
 
@@ -275,6 +295,12 @@ function function_unblock_desktop () {
         chattr -i /home/student/default.png
         chown student:student /home/student/default.png
         chmod 660 /home/student/default.png
+    fi
+
+    if [ -d /home/student/Рабочий\ стол ]; then
+        chattr -i '/home/student/Рабочий стол'
+        chown student:student '/home/student/Рабочий стол'
+        chmod 770 '/home/student/Рабочий стол'
     fi
 }
 
@@ -399,6 +425,10 @@ function function_instant_logout () {
     chown -v student:student /home/student/.config/ksmserverrc
 }
 
+function function_reinstall_plasma () {
+    apt-get reinstall kde5-mini kde5-small gtk-theme-breeze-education sddm-theme-breeze kde5-display-manager-5-sddm plasma5-sddm-kcm sddm plasma5-khotkeys
+}
+
 #     Перезагрузка
 function function_reboot () {
     echo "Перезагрузка"
@@ -422,7 +452,8 @@ function function_main () {
         11) function_instant_logout;;
         12) function_default_chrome;;
         13) function_delete_user;;
-        14 ) function_reboot;;
+        14) function_reinstall_plasma;;
+        15) function_reboot;;
     esac
 }
 
