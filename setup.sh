@@ -309,7 +309,7 @@ function function_autologin () {
     #   Если был автологин на User, меняем на student
     if [ -z ${autologin+x} ]; then
         if [ "$use_gui" = true ]; then
-            username=$(kdialog --password "Введите имя учетной записи для автовхода: " --title "Настройка автовхода")
+            username=$(kdialog "Введите имя учетной записи для автовхода: " --title "Настройка автовхода")
         else
             read -p "Введите имя учетной записи для автовхода: " username
         fi
