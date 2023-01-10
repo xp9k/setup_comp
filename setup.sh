@@ -309,18 +309,18 @@ function function_autologin () {
     #   Если был автологин на User, меняем на student
     if [ -z ${autologin+x} ]; then
         if [ "$use_gui" = true ]; then
-            username=$(kdialog "Введите имя учетной записи для автовхода: " --title "Настройка автовхода")
+            username=$(kdialog --inputbox "Введите имя учетной записи для автовхода: " --title "Настройка автовхода")
         else
             read -p "Введите имя учетной записи для автовхода: " username
         fi
     else
         username=$autologin
     fi
-    if id student &> /dev/null ; then
+#    if id student &> /dev/null ; then
         echo -e "\e[92mМеняю автологин на ${username}\e[0m"
         sed -i -r 's/^([Ss]ession=).*/\1plasma/' /etc/X11/sddm/sddm.conf
         sed -i -r "s/^([Uu]ser=).*/\1${username}/" /etc/X11/sddm/sddm.conf
-    fi
+#    fi
 }
 
 #     Открытый ключ для рута
