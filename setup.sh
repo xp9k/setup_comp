@@ -175,32 +175,6 @@ function function_default_users () {
     chmod 750 '/home/student/Рабочий стол/Сдать работы'
 }
 
-#     Пересоздание Ученика
-function function_recreate_student () {
-    userdel -rf student
-    rm -rf /home/student
-    echo -e "\e[92mСоздаю\e[0m пользователя \e[35mstudent\e[0m и устанавливаю пароль"
-    if [ -z ${student_pass+x} ]; then
-        if [ "$use_gui" = true ]; then
-            password=$(kdialog --password "Введите пароль для Ученика: " --title "Установка пароля для ученика")
-        else
-            read -p "Введите пароль для Ученика: " password
-        fi
-    else
-        password=$student_pass
-    fi
-    if [[ ! "$password" = "" ]]; then
-        useradd student -c "Ученик"
-        chpasswd <<< "student:${password}"
-    else
-        echo -e "\e[31mПароль Ученика не изменен\e[0m"
-    fi
-
-    mkdir -p '/home/student/Рабочий стол/Сдать работы'
-    chown student:student '/home/student/Рабочий стол/Сдать работы'
-    chmod 750 '/home/student/Рабочий стол/Сдать работы'
-}
-
 #     Блокировка рабочего стола ученика
 function function_block_desktop () {
     echo -e "\e[92mБлокирую настройки рабочего стола учетной записи student\e[0m"
@@ -302,6 +276,33 @@ function function_unblock_desktop () {
         chown student:student '/home/student/Рабочий стол'
         chmod 770 '/home/student/Рабочий стол'
     fi
+}
+
+#     Пересоздание Ученика
+function function_recreate_student () {
+    function_unblock_desktop
+    userdel -rf student
+    rm -rf /home/student
+    echo -e "\e[92mСоздаю\e[0m пользователя \e[35mstudent\e[0m и устанавливаю пароль"
+    if [ -z ${student_pass+x} ]; then
+        if [ "$use_gui" = true ]; then
+            password=$(kdialog --password "Введите пароль для Ученика: " --title "Установка пароля для ученика")
+        else
+            read -p "Введите пароль для Ученика: " password
+        fi
+    else
+        password=$student_pass
+    fi
+    if [[ ! "$password" = "" ]]; then
+        useradd student -c "Ученик"
+        chpasswd <<< "student:${password}"
+    else
+        echo -e "\e[31mПароль Ученика не изменен\e[0m"
+    fi
+
+    mkdir -p '/home/student/Рабочий стол/Сдать работы'
+    chown student:student '/home/student/Рабочий стол/Сдать работы'
+    chmod 750 '/home/student/Рабочий стол/Сдать работы'
 }
 
 #   Автологин
