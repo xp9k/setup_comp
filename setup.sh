@@ -33,6 +33,7 @@ options=("Обновить систему"
          "Chrome по умолчанию у Ученика"
          "Удалить учетку User"
          "Переустановить KDE Plasma"
+		 "Включить WoL"
          "Перезагрузить"
 )
 
@@ -430,6 +431,20 @@ function function_reinstall_plasma () {
     apt-get reinstall kde5-mini kde5-small gtk-theme-breeze-education sddm-theme-breeze kde5-display-manager-5-sddm plasma5-sddm-kcm sddm plasma5-khotkeys
 }
 
+function function_enable_wol() {
+    echo 'Cкрипт включает Wake-on-LAN для всех интерфейсов, имя которых начинается с en'
+
+    main() {
+        echo 'ACTION=="add", SUBSYSTEM=="net", NAME=="en*", RUN+="/usr/sbin/ethtool -s $name wol g"' > /etc/udev/rules.d/81-wol.rules &&
+        for i in /sys/class/net/en*; do
+            ethtool -s ${i##*/} wol g
+        done
+    }
+
+    main &&
+    echo 'Готово.'
+}
+
 #     Перезагрузка
 function function_reboot () {
     echo "Перезагрузка"
@@ -454,6 +469,7 @@ function function_main () {
         12) function_default_chrome;;
         13) function_delete_user;;
         14) function_reinstall_plasma;;
+		15) function_enable_wol;;
         15) function_reboot;;
     esac
 }
