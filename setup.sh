@@ -470,7 +470,7 @@ function function_main () {
         13) function_delete_user;;
         14) function_reinstall_plasma;;
 		15) function_enable_wol;;
-        15) function_reboot;;
+        16) function_reboot;;
     esac
 }
 
