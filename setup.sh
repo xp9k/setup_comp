@@ -52,23 +52,22 @@ function function_update () {
         qdbus $dbusRef setLabelText "Обновление списка"
         qdbus $dbusRef Set "" value 1
     fi
-    dnf makecache
+    apt-get update
     if [ "$use_gui" = true ]; then
         qdbus $dbusRef setLabelText "Обновление пакетов"
         qdbus $dbusRef Set "" value 2
     fi
-    dnf --refresh -y upgrade
+    apt-get -y dist-upgrade
     if [ "$use_gui" = true ]; then
         qdbus $dbusRef setLabelText "Обновление модулей ядра"
         qdbus $dbusRef Set "" value 3
     fi
-#    update-kernel -f
-#    if [ "$use_gui" = true ]; then
-#        qdbus $dbusRef setLabelText "Очистка"
-#        qdbus $dbusRef Set "" value 4
-#    fi
-
-    dnf clean all
+    update-kernel -f
+    if [ "$use_gui" = true ]; then
+        qdbus $dbusRef setLabelText "Очистка"
+        qdbus $dbusRef Set "" value 4
+    fi
+    apt-get clean
 
     if [ "$use_gui" = true ]; then
         qdbus $dbusRef setLabelText "Завершено"
@@ -321,8 +320,8 @@ function function_autologin () {
     fi
 #    if id student &> /dev/null ; then
         echo -e "\e[92mМеняю автологин на ${username}\e[0m"
-        sed -i -r 's/^([Ss]ession=).*/\1plasma/' /etc/sddm.conf.d/kde_settings.conf
-        sed -i -r "s/^([Uu]ser=).*/\1${username}/" /etc/sddm.conf.d/kde_settings.conf
+        sed -i -r 's/^([Ss]ession=).*/\1plasma/' /etc/X11/sddm/sddm.conf
+        sed -i -r "s/^([Uu]ser=).*/\1${username}/" /etc/X11/sddm/sddm.conf
 #    fi
 }
 
@@ -331,7 +330,6 @@ function function_ssh_root () {
     #   Настройка ssh для Рута
     if [ -f "${script_dir}/id_rsa.pub" ] ; then
         echo -e "\e[92mНайден ключ ssh \e[35m${script_dir}/id_rsa.pub\e[0m"
-        mkdir -p '/root/.ssh'
         cp -fv "${script_dir}/id_rsa.pub" '/root/.ssh/'
         chmod 440 '/root/.ssh/id_rsa.pub'
         cat '/root/.ssh/id_rsa.pub' > '/root/.ssh/authorized_keys' && chmod -v 600 '/root/.ssh/authorized_keys'
@@ -347,23 +345,11 @@ function function_ssh_root () {
 #     Установка и настройка Veyon
 function function_veyon_setup () {
     echo -e '\e[92mУстановка Veyon\e[0m'
-    dnf install -y veyon
-#     veyon-cli service start
-#     if [ "$(systemctl is-active veyon.service)" == "active" ]; then
+    apt-get install -y veyon
+
+    if [ "$(service veyon status)" == "active" ]; then
         veyon_key_name=$(find "${script_dir}" -type f -name "*_public_key.pem" -exec basename \{} _public_key.pem \;)
         veyon_config=$(find "${script_dir}" -type f \( -name "*.json" ! -name "." \) -exec basename \{} \;)
-
-        if [ -f "${script_dir}/${veyon_config}" ]; then
-            echo -e "\e[92mНайден конфиг для Veyon \e[35m${script_dir}/${veyon_config}\e[0m"
-            echo -e '\e[92mИмпорт конфига\e[0m'
-            veyon-cli config import "${script_dir}/${veyon_config}"
-        else
-            if [ "$use_gui" = true ]; then
-                kdialog --error "Файл конфигурации для Veyon отсутствует"
-            else
-                echo -e "\e[31mФайл конфигурации для Veyon отсутствует\e[0m"
-            fi
-        fi
 
         if [ -f "${script_dir}/${veyon_key_name}_public_key.pem" ]; then
             echo -e "\e[92mНайден ключ для Veyon \e[35m${script_dir}/${veyon_key_name}_public_key.pem\e[0m"
@@ -386,9 +372,20 @@ function function_veyon_setup () {
             fi
         fi
 
-#     else
-#         echo -e '\e[31mVeyon не запущен\e[0m'
-#     fi
+        if [ -f "${script_dir}/${veyon_config}" ]; then
+            echo -e "\e[92mНайден конфиг для Veyon \e[35m${script_dir}/${veyon_config}\e[0m"
+            echo -e '\e[92mИмпорт конфига\e[0m'
+            veyon-cli config import "${script_dir}/${veyon_config}"
+        else
+            if [ "$use_gui" = true ]; then
+                kdialog --error "Файл конфигурации для Veyon отсутствует"
+            else
+                echo -e "\e[31mФайл конфигурации для Veyon отсутствует\e[0m"
+            fi
+        fi
+    else
+        echo -e '\e[31mVeyon не запущен\e[0m'
+    fi
 }
 
 #   Настройка GRUB
@@ -431,8 +428,7 @@ function function_instant_logout () {
 }
 
 function function_reinstall_plasma () {
-#     apt-get reinstall kde5-mini kde5-small gtk-theme-breeze-education sddm-theme-breeze kde5-display-manager-5-sddm plasma5-sddm-kcm sddm plasma5-khotkeys
-    dnf reinstall -y task-plasma5
+    apt-get reinstall kde5-mini kde5-small gtk-theme-breeze-education sddm-theme-breeze kde5-display-manager-5-sddm plasma5-sddm-kcm sddm plasma5-khotkeys
 }
 
 function function_enable_wol() {
@@ -474,7 +470,7 @@ function function_main () {
         13) function_delete_user;;
         14) function_reinstall_plasma;;
 		15) function_enable_wol;;
-        15) function_reboot;;
+        16) function_reboot;;
     esac
 }
 
