@@ -431,8 +431,9 @@ function function_instant_logout () {
 }
 
 function function_reinstall_plasma () {
-#     apt-get reinstall kde5-mini kde5-small gtk-theme-breeze-education sddm-theme-breeze kde5-display-manager-5-sddm plasma5-sddm-kcm sddm plasma5-khotkeys
-    dnf reinstall -y task-plasma5
+    # apt-get reinstall kde5-mini kde5-small gtk-theme-breeze-education sddm-theme-breeze kde5-display-manager-5-sddm plasma5-sddm-kcm sddm plasma5-khotkeys
+    # dnf reinstall -y task-plasma5
+	echo Временно отключено
 }
 
 function function_enable_wol() {
