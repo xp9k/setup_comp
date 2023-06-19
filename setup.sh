@@ -1,4 +1,4 @@
-#!/bin/bash
+ #!/bin/bash
 
 #root_pass="12345678"     #   Пароль для Рута
 #teacher_pass="12345"     #   Пароль для Учителя
@@ -20,21 +20,23 @@ if [ ! $(whoami) == 'root' ]; then
 fi
 
 options=("Обновить систему"
-         "Переименовать компьютер (требуется перезагрузка)"
-         "Создать пользователей по умолчанию"
-         "Пересоздать учетную запись Ученика"
-         "Заблокировать Рабочий стол Ученика"
-         "Разблокировать Рабочий стол Ученика"
-         "Установить автологин"
-         "Установить открытый ssh ключ для root"
-         "Установить и настроить Veyon"
-         "Убрать меню GRUB"
-         "Убрать 30-секундное ожидание у учетной записи Ученика"
-         "Chrome по умолчанию у Ученика"
-         "Удалить учетку User"
-         "Переустановить KDE Plasma"
-		 "Включить WoL"
-         "Перезагрузить"
+        "Переименовать компьютер (требуется перезагрузка)"
+        "Создать пользователей по умолчанию"
+        "Пересоздать учетную запись Ученика"
+        "Заблокировать Рабочий стол Ученика"
+        "Разблокировать Рабочий стол Ученика"
+        "Установить автологин"
+        "Установить открытый ssh ключ для root"
+        "Установить и настроить Veyon"
+        "Убрать меню GRUB"
+        "Убрать 30-секундное ожидание у учетной записи Ученика"
+        "Chrome по умолчанию у Ученика"
+        "Удалить учетку User"
+        "Переустановить KDE Plasma"
+        "Включить WoL"
+        "Включить авторизацию через mos.ru"
+        "Выключить авторизацию через mos.ru"
+        "Перезагрузить"
 )
 
 #   список для GUI
@@ -431,8 +433,8 @@ function function_instant_logout () {
 }
 
 function function_reinstall_plasma () {
-    # apt-get reinstall kde5-mini kde5-small gtk-theme-breeze-education sddm-theme-breeze kde5-display-manager-5-sddm plasma5-sddm-kcm sddm plasma5-khotkeys
-    # dnf reinstall -y task-plasma5
+#     dnf reinstall kde5-mini kde5-small gtk-theme-breeze-education sddm-theme-breeze kde5-display-manager-5-sddm plasma5-sddm-kcm sddm plasma5-khotkeys
+#     dnf reinstall -y task-plasma5
 	echo Временно отключено
 }
 
@@ -448,6 +450,18 @@ function function_enable_wol() {
 
     main &&
     echo 'Готово.'
+}
+
+function function_enable_mos() {
+    dnf in -y mos-auth-core
+    mos-auth-config enable
+    echo -e "\e[92mВход через mos.ru \e[35mвключен\e[0m"
+}
+
+function function_disable_mos() {
+    mos-auth-config disable
+    dnf remove -y mos-auth-core
+    echo -e "\e[92mВход через mos.ru \e[35mотключен\e[0m"
 }
 
 #     Перезагрузка
@@ -474,8 +488,10 @@ function function_main () {
         12) function_default_chrome;;
         13) function_delete_user;;
         14) function_reinstall_plasma;;
-		15) function_enable_wol;;
-        16) function_reboot;;
+        15) function_enable_wol;;
+        16) function_enable_mos;;
+        17) function_disable_mos;;
+        18) function_reboot;;
     esac
 }
 
