@@ -54,7 +54,7 @@ function function_update () {
         qdbus $dbusRef setLabelText "Обновление списка"
         qdbus $dbusRef Set "" value 1
     fi
-    dnf makecache
+    dnf --refresh -y update
     if [ "$use_gui" = true ]; then
         qdbus $dbusRef setLabelText "Обновление пакетов"
         qdbus $dbusRef Set "" value 2
