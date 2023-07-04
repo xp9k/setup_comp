@@ -453,14 +453,14 @@ function function_enable_wol() {
 }
 
 function function_enable_mos() {
-    dnf in -y mos-auth-core
+    dnf in -y mos-auth-core mos-auth-folders
     mos-auth-config enable
     echo -e "\e[92mВход через mos.ru \e[35mвключен\e[0m"
 }
 
 function function_disable_mos() {
     mos-auth-config disable
-    dnf remove -y mos-auth-core
+    dnf remove -y mos-auth-core mos-auth-folders
     echo -e "\e[92mВход через mos.ru \e[35mотключен\e[0m"
 }
 
