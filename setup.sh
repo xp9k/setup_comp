@@ -434,8 +434,8 @@ function function_instant_logout () {
 
 function function_reinstall_plasma () {
 #     dnf reinstall kde5-mini kde5-small gtk-theme-breeze-education sddm-theme-breeze kde5-display-manager-5-sddm plasma5-sddm-kcm sddm plasma5-khotkeys
-#     dnf reinstall -y task-plasma5
-	echo Временно отключено
+     dnf reinstall -y task-plasma5
+#	echo Временно отключено
 }
 
 function function_enable_wol() {
@@ -462,6 +462,7 @@ function function_disable_mos() {
     mos-auth-config disable
     dnf remove -y mos-auth-core mos-auth-folders
     echo -e "\e[92mВход через mos.ru \e[35mотключен\e[0m"
+    sed -i -r "s/^([Cc]urrent=).*/\1breeze/" /etc/sddm.conf.d/kde_settings.conf
 }
 
 #     Перезагрузка
