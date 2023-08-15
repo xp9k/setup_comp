@@ -35,7 +35,9 @@ options=("Обновить систему"
         "Переустановить KDE Plasma"
         "Включить WoL"
         "Включить авторизацию через mos.ru"
-        "Выключить авторизацию через mos.ru"
+        "Отключить авторизацию через mos.ru"
+        "Включить гостевой вход"
+        "Отключить гостевой вход"
         "Перезагрузить"
 )
 
@@ -349,7 +351,7 @@ function function_ssh_root () {
 #     Установка и настройка Veyon
 function function_veyon_setup () {
     echo -e '\e[92mУстановка Veyon\e[0m'
-    dnf install -y veyon
+    dnf install -y veyon-core
 #     veyon-cli service start
 #     if [ "$(systemctl is-active veyon.service)" == "active" ]; then
         veyon_key_name=$(find "${script_dir}" -type f -name "*_public_key.pem" -exec basename \{} _public_key.pem \;)
@@ -465,6 +467,17 @@ function function_disable_mos() {
     sed -i -r "s/^([Cc]urrent=).*/\1breeze/" /etc/sddm.conf.d/kde_settings.conf
 }
 
+function function_enable_mos_guest(){
+    echo -e "\e[92mВключаю гостевой вход через mos-auth\e[0m"
+    sed -i -r 's/.*guest-enabled=.*/guest-enabled=true/i' /etc/mos-auth/auth.conf
+}
+
+function function_disable_mos_guest(){
+    echo -e "\e[92mОтключаю гостевой вход через mos-auth\e[0m"
+    sed -i -r 's/.*guest-enabled=.*/guest-enabled=false/i' /etc/mos-auth/auth.conf
+}
+
+
 #     Перезагрузка
 function function_reboot () {
     echo "Перезагрузка"
@@ -492,7 +505,9 @@ function function_main () {
         15) function_enable_wol;;
         16) function_enable_mos;;
         17) function_disable_mos;;
-        18) function_reboot;;
+        18) function_enable_mos_guest;;
+        19) function_disable_mos_guest;;
+        20) function_reboot;;
     esac
 }
 
