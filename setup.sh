@@ -398,9 +398,11 @@ function function_veyon_setup () {
 #   Настройка GRUB
 function function_grub () {
     echo -e "\e[92mМеняю настройки GRUB\e[0m"
-    sed -i -r 's/^#*(GRUB_TIMEOUT=).*/GRUB_TIMEOUT=0/' /etc/sysconfig/grub2
-    sed -i -r 's/^#*(GRUB_HIDDEN_TIMEOUT=).*/GRUB_HIDDEN_TIMEOUT=$GRUB_TIMEOUT/' /etc/sysconfig/grub2
-    grub-mkconfig -o /boot/grub/grub.cfg
+    sed -i -r 's/.*GRUB_TIMEOUT=.*/GRUB_TIMEOUT="0"/i' /etc/default/grub
+    sed -i -r 's/.*GRUB_HIDDEN_TIMEOUT=.*/GRUB_HIDDEN_TIMEOUT=$GRUB_TIMEOUT/i' /etc/default/grub
+    sed -i -r 's/.*GRUB_DISABLE_OS_PROBER=.*/GRUB_DISABLE_OS_PROBER="true"/i' /etc/default/grub
+#     grub-mkconfig -o /boot/grub/grub.cfg
+    update-grub2
 }
 
 #   Удаление ненужной учетки пользователя
