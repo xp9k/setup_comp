@@ -32,7 +32,6 @@
 <li>"Отключить гостевой вход"</li>
 <li>"Перезагрузить"</li>
 </il>
-<br/>
 Пример:<br/>
 ![Графический режим](https://github.com/xp9k/setup_comp/blob/main/Screenshot_1.png)
 ![Консольный режим](https://github.com/xp9k/setup_comp/blob/main/Screenshot_2.png)
