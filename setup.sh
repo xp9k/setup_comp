@@ -355,19 +355,9 @@ function function_veyon_setup () {
 #     veyon-cli service start
 #     if [ "$(systemctl is-active veyon.service)" == "active" ]; then
         veyon_key_name=$(find "${script_dir}" -type f -name "*_public_key.pem" -exec basename \{} _public_key.pem \;)
-        veyon_config=$(find "${script_dir}" -type f \( -name "*.json" ! -name "." \) -exec basename \{} \;)
 
-        if [ -f "${script_dir}/${veyon_config}" ]; then
-            echo -e "\e[92mНайден конфиг для Veyon \e[35m${script_dir}/${veyon_config}\e[0m"
-            echo -e '\e[92mИмпорт конфига\e[0m'
-            veyon-cli config import "${script_dir}/${veyon_config}"
-        else
-            if [ "$use_gui" = true ]; then
-                kdialog --error "Файл конфигурации для Veyon отсутствует"
-            else
-                echo -e "\e[31mФайл конфигурации для Veyon отсутствует\e[0m"
-            fi
-        fi
+        veyon-cli config set Authentication/Method 1
+        veyon-cli config set Service/HideTrayIcon true
 
         if [ -f "${script_dir}/${veyon_key_name}_public_key.pem" ]; then
             echo -e "\e[92mНайден ключ для Veyon \e[35m${script_dir}/${veyon_key_name}_public_key.pem\e[0m"
