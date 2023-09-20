@@ -38,6 +38,7 @@ options=("Обновить систему"
         "Отключить авторизацию через mos.ru"
         "Включить гостевой вход"
         "Отключить гостевой вход"
+        "Обновить скрипт"
         "Перезагрузить"
 )
 
@@ -469,6 +470,17 @@ function function_disable_mos_guest(){
     sed -i -r 's/.*guest-enabled=.*/guest-enabled=false/i' /etc/mos-auth/auth.conf
 }
 
+#Обновление скрипта
+function function_update_script(){
+    echo -e "\e[92mСкачиваю свежий скрипт\e[0m"
+    rm -f "$0"
+    wget https://raw.githubusercontent.com/xp9k/setup_comp/main/setup.sh -P $(dirname $0)
+    chown root:root /root/setup.sh
+    chmod +x /root/setup.sh
+    echo -e "\e[92mГотово!\e[0m"
+    /bin/bash /root/setup.sh
+    exit
+}
 
 #     Перезагрузка
 function function_reboot () {
@@ -499,7 +511,8 @@ function function_main () {
         17) function_disable_mos;;
         18) function_enable_mos_guest;;
         19) function_disable_mos_guest;;
-        20) function_reboot;;
+        20) function_update_script;;
+        21) function_reboot;;
     esac
 }
 
