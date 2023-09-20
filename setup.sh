@@ -473,12 +473,11 @@ function function_disable_mos_guest(){
 #Обновление скрипта
 function function_update_script(){
     echo -e "\e[92mСкачиваю свежий скрипт\e[0m"
-    rm -f "$0"
-    wget https://raw.githubusercontent.com/xp9k/setup_comp/main/setup.sh -P $(dirname $0)
-    chown root:root /root/setup.sh
-    chmod +x /root/setup.sh
+    wget https://raw.githubusercontent.com/xp9k/setup_comp/main/setup.sh -O "$0"
+    chown root:root "$0"
+    chmod +x "$0"
     echo -e "\e[92mГотово!\e[0m"
-    /bin/bash /root/setup.sh
+    /bin/bash "$0"
     exit
 }
 
