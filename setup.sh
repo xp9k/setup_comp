@@ -1,4 +1,4 @@
- #!/bin/bash
+#!/bin/bash
 
 #root_pass="12345678"     #   Пароль для Рута
 #teacher_pass="12345"     #   Пароль для Учителя
@@ -326,8 +326,11 @@ function function_autologin () {
     fi
 #    if id student &> /dev/null ; then
         echo -e "\e[92mМеняю автологин на ${username}\e[0m"
-        sed -i -r 's/^([Ss]ession=).*/\1plasma/' /etc/sddm.conf.d/kde_settings.conf
-        sed -i -r "s/^([Uu]ser=).*/\1${username}/" /etc/sddm.conf.d/kde_settings.conf
+#         sed -i -r 's/^([Ss]ession=).*/\1plasma/' /etc/sddm.conf
+#         sed -i -r "s/^([Uu]ser=).*/\1${username}/" /etc/sddm.conf
+        py-ini-config set /etc/sddm.conf "Autologin" "User" "$username"
+        py-ini-config set /etc/sddm.conf "Autologin" "Session" "plasma.desktop"
+
 #    fi
 }
 
