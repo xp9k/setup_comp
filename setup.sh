@@ -328,8 +328,9 @@ function function_autologin () {
         echo -e "\e[92mМеняю автологин на ${username}\e[0m"
 #         sed -i -r 's/^([Ss]ession=).*/\1plasma/' /etc/sddm.conf
 #         sed -i -r "s/^([Uu]ser=).*/\1${username}/" /etc/sddm.conf
-        py-ini-config set /etc/sddm.conf "Autologin" "User" "$username"
-        py-ini-config set /etc/sddm.conf "Autologin" "Session" "plasma.desktop"
+        mv -f /etc/sddm.conf /etc/sddm.conf.d/kde_settings.conf
+        py-ini-config set /etc/sddm.conf.d/kde_settings.conf "Autologin" "User" "$username"
+        py-ini-config set /etc/sddm.conf.d/kde_settings.conf "Autologin" "Session" "01plasma"
 
 #    fi
 }
@@ -459,8 +460,8 @@ function function_enable_mos() {
 function function_disable_mos() {
     mos-auth-config disable
     dnf remove -y mos-auth-core mos-auth-folders
-    echo -e "\e[92mВход через mos.ru \e[35mотключен\e[0m"
-    sed -i -r "s/^([Cc]urrent=).*/\1breeze/" /etc/sddm.conf.d/kde_settings.conf
+#     echo -e "\e[92mВход через mos.ru \e[35mотключен\e[0m"
+#     sed -i -r "s/^([Cc]urrent=).*/\1breeze/" /etc/sddm.conf.d/kde_settings.conf
 }
 
 function function_enable_mos_guest(){
