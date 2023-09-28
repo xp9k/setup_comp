@@ -329,8 +329,8 @@ function function_autologin () {
 #         sed -i -r 's/^([Ss]ession=).*/\1plasma/' /etc/sddm.conf
 #         sed -i -r "s/^([Uu]ser=).*/\1${username}/" /etc/sddm.conf
         mv -f /etc/sddm.conf /etc/sddm.conf.d/kde_settings.conf
-        py-ini-config set /etc/sddm.conf.d/kde_settings.conf "Autologin" "User" "$username"
-        py-ini-config set /etc/sddm.conf.d/kde_settings.conf "Autologin" "Session" "01plasma"
+        py-ini-config set /etc/sddm.conf "Autologin" "User" "$username"
+        py-ini-config set /etc/sddm.conf "Autologin" "Session" "01plasma"
 
 #    fi
 }
